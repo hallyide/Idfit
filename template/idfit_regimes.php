@@ -89,6 +89,7 @@
       <div class="page-sub">5 programmes personnalisés selon votre objectif</div>
     </div>
 
+    <?php if ($isGold ?? false): ?>
     <div class="gold-banner">
       <div class="gold-ico"><i class="ti ti-star u-style-37" aria-hidden="true"></i></div>
       <div class="gold-txt">
@@ -96,6 +97,7 @@
         <div class="gold-desc">15% de remise appliquée sur tous les régimes automatiquement</div>
       </div>
     </div>
+    <?php endif; ?>
 
     <div class="filters">
       <button class="filter-chip on">Tous</button>
@@ -127,15 +129,19 @@
         <div class="price-row">
           <div>
             <div class="price-block">
-              <span class="price-orig">53 000 Ar</span>
-              <span class="price-final">45 000</span>
+              <?php if ($isGold ?? false): ?>
+                <span class="price-orig">53 000 Ar</span>
+                <span class="price-final">45 000</span>
+              <?php else: ?>
+                <span class="price-final">53 000</span>
+              <?php endif; ?>
               <span class="price-dur">Ar/mois</span>
             </div>
-            <span class="discount">−15% Gold</span>
+            <?php if ($isGold ?? false): ?><span class="discount">−15% Gold</span><?php endif; ?>
           </div>
           <div class="btn-row">
             <button class="btn-sub"><i class="ti ti-check" aria-hidden="true"></i> Souscrit</button>
-            <button class="btn-pdf" data-prompt="Exporter PDF régime IdFit"><i class="ti ti-file-export" aria-hidden="true"></i> PDF</button>
+            <button class="btn-pdf" data-action="downloadPDF"><i class="ti ti-file-export" aria-hidden="true"></i> PDF</button>
           </div>
         </div>
       </div>
@@ -161,15 +167,19 @@
         <div class="price-row">
           <div>
             <div class="price-block">
-              <span class="price-orig">42 000 Ar</span>
-              <span class="price-final">35 700</span>
+              <?php if ($isGold ?? false): ?>
+                <span class="price-orig">42 000 Ar</span>
+                <span class="price-final">35 700</span>
+              <?php else: ?>
+                <span class="price-final">42 000</span>
+              <?php endif; ?>
               <span class="price-dur">Ar/mois</span>
             </div>
-            <span class="discount">−15% Gold</span>
+            <?php if ($isGold ?? false): ?><span class="discount">−15% Gold</span><?php endif; ?>
           </div>
           <div class="btn-row">
-            <button class="btn-sub"><i class="ti ti-shopping-cart" aria-hidden="true"></i> Souscrire</button>
-            <button class="btn-pdf"><i class="ti ti-file-export" aria-hidden="true"></i> PDF</button>
+            <button class="btn-sub" data-action="subscribeToRegime" data-regime-id="2" data-duree="4"><i class="ti ti-shopping-cart" aria-hidden="true"></i> Souscrire</button>
+            <button class="btn-pdf" data-action="downloadPDF"><i class="ti ti-file-export" aria-hidden="true"></i> PDF</button>
           </div>
         </div>
       </div>
@@ -194,15 +204,19 @@
         <div class="price-row">
           <div>
             <div class="price-block">
-              <span class="price-orig">65 000 Ar</span>
-              <span class="price-final">55 250</span>
+              <?php if ($isGold ?? false): ?>
+                <span class="price-orig">65 000 Ar</span>
+                <span class="price-final">55 250</span>
+              <?php else: ?>
+                <span class="price-final">65 000</span>
+              <?php endif; ?>
               <span class="price-dur">Ar/mois</span>
             </div>
-            <span class="discount">−15% Gold</span>
+            <?php if ($isGold ?? false): ?><span class="discount">−15% Gold</span><?php endif; ?>
           </div>
           <div class="btn-row">
-            <button class="btn-sub"><i class="ti ti-shopping-cart" aria-hidden="true"></i> Souscrire</button>
-            <button class="btn-pdf"><i class="ti ti-file-export" aria-hidden="true"></i> PDF</button>
+            <button class="btn-sub" data-action="subscribeToRegime" data-regime-id="3" data-duree="3"><i class="ti ti-shopping-cart" aria-hidden="true"></i> Souscrire</button>
+            <button class="btn-pdf" data-action="downloadPDF"><i class="ti ti-file-export" aria-hidden="true"></i> PDF</button>
           </div>
         </div>
       </div>
@@ -228,15 +242,19 @@
         <div class="price-row">
           <div>
             <div class="price-block">
-              <span class="price-orig">58 000 Ar</span>
-              <span class="price-final">49 300</span>
+              <?php if ($isGold ?? false): ?>
+                <span class="price-orig">58 000 Ar</span>
+                <span class="price-final">49 300</span>
+              <?php else: ?>
+                <span class="price-final">58 000</span>
+              <?php endif; ?>
               <span class="price-dur">Ar/mois</span>
             </div>
-            <span class="discount">−15% Gold</span>
+            <?php if ($isGold ?? false): ?><span class="discount">−15% Gold</span><?php endif; ?>
           </div>
           <div class="btn-row">
-            <button class="btn-sub"><i class="ti ti-shopping-cart" aria-hidden="true"></i> Souscrire</button>
-            <button class="btn-pdf"><i class="ti ti-file-export" aria-hidden="true"></i> PDF</button>
+            <button class="btn-sub" data-action="subscribeToRegime" data-regime-id="4" data-duree="6"><i class="ti ti-shopping-cart" aria-hidden="true"></i> Souscrire</button>
+            <button class="btn-pdf" data-action="downloadPDF"><i class="ti ti-file-export" aria-hidden="true"></i> PDF</button>
           </div>
         </div>
       </div>

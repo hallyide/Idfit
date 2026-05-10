@@ -81,7 +81,13 @@ class AuthController extends ResourceController
             ]);
 
             unset($user['password_hash']); // Sécurité
-            return $this->sendSuccess("Connexion réussie", ['user' => $user]);
+
+            // Détermination de l'URL de redirection selon le rôle
+            // Utilisation de strtolower pour être insensible à la casse (Admin vs admin)
+            $userRole = strtolower((string)($user['role'] ?? 'user'));
+            $redirect = ($userRole === 'admin') ? base_url('admin') : base_url('idfit_dashboard_user.php');
+
+            return $this->sendSuccess("Connexion réussie", ['user' => $user, 'redirect' => $redirect]);
         }
 
         return $this->sendError("Identifiants invalides", 401);

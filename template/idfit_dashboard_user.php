@@ -159,7 +159,7 @@
           <div class="regime-name">Régime Méditerranéen</div>
           <div class="regime-sub">3 mois · 30% viande · 40% poisson · 30% volaille</div>
         </div>
-        <div class="regime-price">-15% Gold</div>
+        <div class="regime-price"><?= ($isGold ?? false) ? '-15% Gold' : '' ?></div>
       </div>
       <div class="u-style-18">
         <div class="u-style-19">

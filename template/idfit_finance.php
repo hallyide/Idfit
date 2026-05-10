@@ -95,7 +95,7 @@
         <label class="flabel">Entrer un code de recharge</label>
         <div class="inp-row">
           <input id="wallet-code" class="inp" placeholder="" maxlength="14">
-          <button id="wallet-credit" class="btn-enc"><i class="ti ti-coins" aria-hidden="true"></i> Encaisser</button>
+          <button id="wallet-credit" class="btn-enc" data-action="creditWallet"><i class="ti ti-coins" aria-hidden="true"></i> Encaisser</button>
         </div>
         <div class="u-style-24">
           <i class="ti ti-info-circle u-style-1" aria-hidden="true"></i> Les codes sont à usage unique et non remboursables

@@ -11,6 +11,7 @@
   const API_WEIGHT_ADD = '/api/weight';
   const API_WALLET_RECHARGE = '/wallet/recharge';
   const API_GOLD_UPGRADE = '/gold/upgrade';
+  const API_PDF_RAPPORT = '/api/pdf/rapport';
 
   const API_TEMP_USER_KEY = 'idfit_temp_user_v1';
 
@@ -128,8 +129,8 @@
 
       await syncProfile();
 
-      const role = (payload.data && payload.data.user && payload.data.user.role) || payload.role || 'user';
-      window.location.href = role === 'admin' ? 'idfit_admin.php' : 'idfit_dashboard_user.php';
+      // Utilise la redirection fournie par le serveur, sinon fallback
+      window.location.href = (payload.data && payload.data.redirect) || 'idfit_dashboard_user.php';
     } catch {
       setMessage(messageEl, 'Erreur connexion', 'bad');
     }
@@ -300,10 +301,39 @@
         return;
       }
 
-      setWalletBalanceUI(payload.solde);
-      alert('Compte credite');
+      if (codeInput) codeInput.value = '';
+      alert('Demande envoyée');
     } catch {
       alert('Erreur réseau');
+    }
+  }
+
+  async function subscribeToRegime(buttonEl) {
+    const regimeId = buttonEl.dataset.regimeId;
+    const duree = buttonEl.dataset.duree;
+
+    if (!regimeId || !duree) return;
+    if (!confirm("Voulez-vous souscrire à ce régime ?")) return;
+
+    try {
+      const res = await fetch('/subscription/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: `regime_id=${regimeId}&duree_mois=${duree}`
+      });
+
+      const payload = await res.json().catch(() => ({}));
+
+      alert(payload.message || "Réponse du serveur inconnue");
+
+      if (payload.success) {
+        location.reload(); // Rafraîchir pour voir le nouveau régime actif et le solde
+      }
+    } catch (error) {
+      alert("Erreur réseau lors de la souscription");
     }
   }
 
@@ -329,6 +359,40 @@
     }
   }
 
+  async function downloadPDF() {
+    try {
+      const res = await fetch(API_PDF_RAPPORT, {
+        headers: { Accept: 'application/pdf' },
+        credentials: 'same-origin',
+      });
+
+      if (!res.ok) {
+        const isJson = res.headers.get('content-type')?.includes('application/json');
+        const payload = isJson ? await res.json() : {};
+        alert(payload.message || 'Erreur lors de la génération du PDF');
+        return;
+      }
+
+      // Succès : Récupération du blob et déclenchement du téléchargement
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'rapport_idfit.pdf';
+      document.body.appendChild(a);
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+      a.remove();
+
+      alert('PDF téléchargé avec succès !');
+    } catch (error) {
+      console.error('Erreur PDF:', error);
+      alert('Impossible de contacter le serveur pour générer le PDF.');
+    }
+  }
+
   function bindDeclarativeActions() {
     document.addEventListener('click', (event) => {
       const actionEl = event.target.closest('[data-action]');
@@ -344,12 +408,14 @@
         updateWeightHistory,
         creditWallet,
         upgradeToGold,
+        downloadPDF,
+        subscribeToRegime,
       };
 
       const fn = map[actionName];
       if (typeof fn === 'function') {
         event.preventDefault();
-        fn();
+        fn(actionEl); // On passe l'élément pour pouvoir lire ses attributs data
       }
     });
   }

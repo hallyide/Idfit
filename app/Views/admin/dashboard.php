@@ -34,6 +34,7 @@
     <div class="actions">
         <a href="/admin/regimes">Gerer les regimes</a>
         <a href="/admin/sports">Gerer les sports</a>
+        <a href="<?= base_url('admin/validation-codes') ?>">Valider les recharges</a>
     </div>
 </body>
 </html>
