@@ -52,12 +52,16 @@
         <i class="ti ti-crown" aria-hidden="true"></i>
         <span>Gold</span>
       </a>
+      <a class="uh-logout" href="/logout" title="Se déconnecter">
+        <i class="ti ti-logout" aria-hidden="true"></i>
+        <span>Déconnexion</span>
+      </a>
       <div class="uh-profile" aria-label="Profil utilisateur">
         <div class="uh-profile-copy">
           <div class="uh-profile-name"><?= esc($userFirstName ?? 'User') ?> <?= esc(substr($userLastName ?? '', 0, 1)) ?>.</div>
           <div class="uh-profile-role"><?= ($isGold ?? false) ? 'Membre Gold' : 'Membre' ?></div>
         </div>
-        <a href="/api/logout" class="uh-avatar" title="Se déconnecter" style="text-decoration: none;">
+        <a href="/logout" class="uh-avatar" title="Se déconnecter" style="text-decoration: none;">
           <?= strtoupper(substr($userFirstName ?? 'U', 0, 1) . substr($userLastName ?? '', 0, 1)) ?>
         </a>
       </div>
@@ -75,6 +79,8 @@
     <div class="sb-section">Finance</div>
     <div class="sb-item" onclick="location.href='idfit_finance.php'"><i class="ti ti-wallet" aria-hidden="true"></i> Portefeuille</div>
     <div class="sb-item" onclick="location.href='idfit_finance.php'"><i class="ti ti-star" aria-hidden="true"></i> Option Gold</div>
+    <div class="sb-section">Compte</div>
+    <div class="sb-item sb-logout" onclick="location.href='/logout'"><i class="ti ti-logout" aria-hidden="true"></i> Déconnexion</div>
     <div class="sb-bottom">
       <div class="sb-user">
         <div class="sb-av"><?= strtoupper(substr($userFirstName ?? 'U', 0, 1) . substr($userLastName ?? '', 0, 1)) ?></div>
@@ -97,12 +103,12 @@
     <div class="metrics">
       <div class="met">
         <div class="met-label"><i class="ti ti-weight u-style-1" aria-hidden="true"></i> Poids actuel</div>
-        <div class="met-val met-accent"><span id="display-weight"><?= number_format($user['poids'] ?? 0, 1) ?></span> <span class="u-style-12">kg</span></div>
-        <div class="met-sub u-style-2" id="display-weight-date">Dernière mise à jour : <?= !empty($user['updated_at']) ? date('d/m/Y', strtotime($user['updated_at'])) : 'Jamais' ?></div>
+        <div class="met-val met-accent"><span id="display-weight"><?= number_format((float)($poids ?? 0), 1, '.', '') ?></span> <span class="u-style-12">kg</span></div>
+        <div class="met-sub u-style-2" id="display-weight-date">Dernière mise à jour : <?= !empty($lastWeightDate) ? date('d/m/Y', strtotime((string)$lastWeightDate)) : 'Jamais' ?></div>
       </div>
       <div class="met">
         <div class="met-label"><i class="ti ti-target u-style-1" aria-hidden="true"></i> Objectif</div>
-        <div class="met-val u-style-13" id="display-objective"><?= esc(ucfirst($user['objectif'] ?? 'Non défini')) ?></div>
+        <div class="met-val u-style-13" id="display-objective"><?= esc($objectiveLabel ?? 'IMC idéal') ?></div>
         <div class="met-sub">Cible : <?= number_format($idealWeight ?? 0, 1) ?> kg</div>
       </div>
       <div class="met">
@@ -138,7 +144,7 @@
         <div class="insert-form">
           <div>
             <label class="flabel">Poids du jour</label>
-            <div class="u-style-14"><input id="weight-value" class="inp" value="<?= $user['poids'] ?? '' ?>"><span class="u-style-15">kg</span></div>
+            <div class="u-style-14"><input id="weight-value" class="inp" type="number" step="0.1" min="20" value="<?= esc((string)($poids ?? '')) ?>"><span class="u-style-15">kg</span></div>
           </div>
           <div>
             <label class="flabel">Date</label>

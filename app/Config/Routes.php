@@ -14,6 +14,7 @@ $routes->post('auth/finalizeRegister', 'AuthController::finalizeRegister');
 
 // Ajoutez cette ligne dans votre fichier Routes.php
 $routes->post('auth/registerFull', 'AuthController::registerFull');
+$routes->get('logout', 'AuthController::logout');
 
 $routes->get('/', 'Home::index');
 $routes->get('vitrine.php', 'Home::index'); // Ajout de cette ligne
@@ -69,6 +70,7 @@ $routes->group('api', static function ($routes) {
     // Routes publiques
     $routes->post('register', 'Api\AuthController::register');
     $routes->post('login', 'Api\AuthController::login');
+    $routes->get('check-email', 'Api\AuthController::checkEmail');
     
     // Routes privées (protégées par le middleware 'auth')
     $routes->group('', ['filter' => 'auth'], static function ($routes) {

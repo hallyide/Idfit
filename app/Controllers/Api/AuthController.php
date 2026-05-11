@@ -10,6 +10,24 @@ class AuthController extends ResourceController
 {
     use ApiResponseTrait;
 
+    public function checkEmail()
+    {
+        $email = trim((string) $this->request->getGet('email'));
+
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->sendError(['email' => 'Adresse email invalide.']);
+        }
+
+        $exists = (new UserModel())->where('email', $email)->first() !== null;
+
+        return $this->sendSuccess('Disponibilite email', [
+            'available' => ! $exists,
+            'message' => $exists
+                ? 'Cette adresse email est déjà utilisée.'
+                : 'Adresse email disponible.',
+        ]);
+    }
+
     public function register()
     {
         $rules = [
@@ -17,7 +35,7 @@ class AuthController extends ResourceController
             'prenom'   => 'required|min_length[2]',
             'genre'    => 'required|in_list[H,F]',
             'email'    => 'required|valid_email|is_unique[users.email]',
-            'password' => 'required|min_length[6]',
+            'password' => 'required|min_length[8]',
             'taille'   => 'required|numeric',
             'poids'    => 'required|numeric'
         ];

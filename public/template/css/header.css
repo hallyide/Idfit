@@ -159,6 +159,27 @@
       border-color:rgba(162,160,1,.22);
     }
 
+    .uh-logout {
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      min-height:40px;
+      padding:0 12px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,.30);
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      font-size:13px;
+      font-weight:800;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+
+    .uh-logout:hover {
+      background:#fff;
+      color:var(--dark);
+    }
+
     .uh-profile {
       display:flex;
       align-items:center;
@@ -272,4 +293,3 @@
         font-size:12px;
       }
     }
-
