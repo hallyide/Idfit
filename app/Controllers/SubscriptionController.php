@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\UserModel;
 use App\Models\PrixRegimeModel;
 use App\Models\SubscriptionModel;
+use App\Models\ConfigSystemModel;
 
 class SubscriptionController extends BaseController
 {
@@ -12,11 +13,16 @@ class SubscriptionController extends BaseController
     {
         $userId = session()->get('user_id');
 
-        $regimeId =
-            $this->request->getPost('regime_id');
+        if (!$userId) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'success' => false,
+                'message' => 'Utilisateur non connecte'
+            ]);
+        }
 
-        $duree =
-            $this->request->getPost('duree_mois');
+        // Convertir en entier pour s'assurer de la bonne comparaison en base de données
+        $regimeId = (int) $this->request->getPost('regime_id');
+        $duree = (int) $this->request->getPost('duree_mois');
 
         $userModel = new UserModel();
 
@@ -28,6 +34,14 @@ class SubscriptionController extends BaseController
         $user =
             $userModel->find($userId);
 
+        if (!$user) {
+
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Utilisateur introuvable'
+            ]);
+        }
+
         $prixData =
             $prixModel
             ->where('regime_id', $regimeId)
@@ -38,15 +52,15 @@ class SubscriptionController extends BaseController
 
             return $this->response->setJSON([
                 'success' => false,
-                'message' => 'Prix introuvable'
+                'message' => "Prix introuvable pour le régime ID {$regimeId} et la durée {$duree} mois."
             ]);
         }
 
         $prix = $prixData['prix'];
 
         if ($user['is_gold']) {
-
-            $prix = $prix * 0.85;
+            $discountPct = (float) (new ConfigSystemModel())->getValue('gold_discount', '15');
+            $prix = $prix * (1 - ($discountPct / 100));
         }
 
         if ($user['wallet_balance'] < $prix) {

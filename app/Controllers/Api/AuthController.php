@@ -57,8 +57,22 @@ class AuthController extends ResourceController
 
         $userModel = new UserModel();
         $user = $userModel->where('email', $this->request->getVar('email'))->first();
+        $passwordInput = (string) $this->request->getVar('password');
 
-        if ($user && password_verify($this->request->getVar('password'), $user['password_hash'])) {
+        if ($user) {
+            $isPasswordValid = password_verify($passwordInput, $user['password_hash']);
+
+            // Compatibilite temporaire avec donnees de test en clair.
+            if (!$isPasswordValid && hash_equals((string) $user['password_hash'], $passwordInput)) {
+                $userModel->update($user['id'], ['password_hash' => $passwordInput]);
+                $user = $userModel->find($user['id']);
+                $isPasswordValid = true;
+            }
+
+            if (!$isPasswordValid) {
+                return $this->sendError("Identifiants invalides", 401);
+            }
+
             // Création de la session
             session()->set([
                 'user_id'      => $user['id'],
@@ -67,7 +81,13 @@ class AuthController extends ResourceController
             ]);
 
             unset($user['password_hash']); // Sécurité
-            return $this->sendSuccess("Connexion réussie", ['user' => $user]);
+
+            // Détermination de l'URL de redirection selon le rôle
+            // Utilisation de strtolower pour être insensible à la casse (Admin vs admin)
+            $userRole = strtolower((string)($user['role'] ?? 'user'));
+            $redirect = ($userRole === 'admin') ? base_url('admin') : base_url('idfit_dashboard_user.php');
+
+            return $this->sendSuccess("Connexion réussie", ['user' => $user, 'redirect' => $redirect]);
         }
 
         return $this->sendError("Identifiants invalides", 401);
