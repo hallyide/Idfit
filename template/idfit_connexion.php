@@ -95,6 +95,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 22px;
     }
 
     .btn-toggle-password:hover {

@@ -120,7 +120,7 @@
           <label class="flabel" for="password"><i class="ti ti-lock" aria-hidden="true"></i> Mot de passe</label>
           <div class="password-wrapper" style="position:relative; display:flex; align-items:center;">
             <input id="password" name="password" class="inp" type="password" placeholder="••••••••" autocomplete="new-password" required style="width:100%; padding-right:40px;">
-            <button type="button" class="btn-toggle-password" onclick="togglePassword('password', 'eye-icon-pw')" style="position:absolute; right:10px; background:transparent; border:none; color:#888; cursor:pointer;" aria-label="Afficher le mot de passe">
+            <button type="button" class="btn-toggle-password" onclick="togglePassword('password', 'eye-icon-pw')" style="position:absolute; right:10px; background:transparent; border:none; color:#888; cursor:pointer; font-size:22px;" aria-label="Afficher le mot de passe">
               <i id="eye-icon-pw" class="ti ti-eye" aria-hidden="true"></i>
             </button>
           </div>
@@ -132,7 +132,7 @@
           <label class="flabel" for="confirm-password"><i class="ti ti-lock-check" aria-hidden="true"></i> Confirmer mot de passe</label>
           <div class="password-wrapper" style="position:relative; display:flex; align-items:center;">
             <input id="confirm-password" name="confirm-password" class="inp" type="password" placeholder="••••••••" autocomplete="new-password" required style="width:100%; padding-right:40px;">
-            <button type="button" class="btn-toggle-password" onclick="togglePassword('confirm-password', 'eye-icon-conf')" style="position:absolute; right:10px; background:transparent; border:none; color:#888; cursor:pointer;" aria-label="Afficher le mot de passe">
+            <button type="button" class="btn-toggle-password" onclick="togglePassword('confirm-password', 'eye-icon-conf')" style="position:absolute; right:10px; background:transparent; border:none; color:#888; cursor:pointer; font-size:22px;" aria-label="Afficher le mot de passe">
               <i id="eye-icon-conf" class="ti ti-eye" aria-hidden="true"></i>
             </button>
           </div>
