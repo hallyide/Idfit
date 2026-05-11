@@ -5,6 +5,12 @@
         <p class="admin-sub">Consultez et validez les demandes de recharges des utilisateurs.</p>
     </div>
 
+    <?php if (session()->getFlashdata('message')): ?>
+        <div style="background: #E1F5EE; color: #085041; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; border: 1px solid #1D9E75;">
+            <i class="ti ti-circle-check"></i> <?= session()->getFlashdata('message') ?>
+        </div>
+    <?php endif; ?>
+
     <div class="card shadow-sm">
         <table class="admin-table">
             <thead>

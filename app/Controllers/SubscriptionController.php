@@ -20,11 +20,9 @@ class SubscriptionController extends BaseController
             ]);
         }
 
-        $regimeId =
-            $this->request->getPost('regime_id');
-
-        $duree =
-            $this->request->getPost('duree_mois');
+        // Convertir en entier pour s'assurer de la bonne comparaison en base de données
+        $regimeId = (int) $this->request->getPost('regime_id');
+        $duree = (int) $this->request->getPost('duree_mois');
 
         $userModel = new UserModel();
 
@@ -54,7 +52,7 @@ class SubscriptionController extends BaseController
 
             return $this->response->setJSON([
                 'success' => false,
-                'message' => 'Prix introuvable'
+                'message' => "Prix introuvable pour le régime ID {$regimeId} et la durée {$duree} mois."
             ]);
         }
 

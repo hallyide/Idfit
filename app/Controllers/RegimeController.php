@@ -6,19 +6,27 @@ use App\Models\RegimeModel;
 
 class RegimeController extends BaseController
 {
-    public function index()
+   public function index()
     {
         $model = new RegimeModel();
 
-        $data['regimes'] =
-            $model->findAll();
+        // 1. Récupérer tous les régimes
+        // Note : Idéalement, crée une méthode dans ton Model pour joindre les prix et les sports
+        $regimes = $model->findAll();
 
-        return view(
-            'admin/regimes/index',
-            $data
-        );
+        // 2. Préparer les données pour la vue
+        $data = [
+            'regimes'       => $regimes,
+            'isGold'        => session()->get('is_gold') ?? false,
+            'walletBalance' => session()->get('wallet_balance') ?? 0,
+            'userFirstName' => session()->get('prenom') ?? 'Utilisateur',
+            'userLastName'  => session()->get('nom') ?? '',
+            'title'         => 'Régimes Disponibles'
+        ];
+
+        // 3. Charger la vue (Assure-toi que le chemin correspond à ton fichier)
+        return view('admin/regimes/index', $data);
     }
-
     public function create()
     {
         $model = new RegimeModel();

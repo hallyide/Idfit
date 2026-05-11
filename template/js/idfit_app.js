@@ -52,7 +52,8 @@
     document.querySelectorAll('[data-wallet-balance]').forEach((n) => {
       n.textContent = value + ' Ar';
     });
-    const walletBalanceNode = document.getElementById('wallet-balance');
+    // On cible l'ID spécifique de la page finance s'il existe
+    const walletBalanceNode = document.getElementById('wallet-balance') || document.querySelector('.w-amount span#wallet-balance');
     if (walletBalanceNode) walletBalanceNode.textContent = value;
   }
 
@@ -89,10 +90,19 @@
         document.querySelector('.page-title').textContent = 'Bonjour, ' + prenom + ' 👋';
       }
 
-      // IMC (si présents sur la page)
-      if (document.getElementById('imc-val') && user.poids != null) {
-        setTextById('imc-val', Number(user.poids).toFixed(1));
+      // Mise à jour des metrics sur le dashboard
+      if (user.poids != null) {
+        setTextById('display-weight', Number(user.poids).toFixed(1));
       }
+      
+      // On peut recalculer l'IMC ou attendre que le serveur le renvoie
+      if (user.taille && user.poids) {
+        const h = user.taille / 100;
+        const imc = (user.poids / (h * h)).toFixed(1);
+        setTextById('display-imc', imc);
+      }
+
+      setTextById('display-weight-date', 'Dernière mise à jour : ' + new Date().toLocaleDateString());
 
       setWalletBalanceUI(walletBalance);
       setGoldStatusUI(isGold);
@@ -228,6 +238,11 @@
       const payload = await res.json().catch(() => ({}));
 
       if (!res.ok || !payload || !payload.success) {
+        if (payload.errors && payload.errors.email) {
+            alert("Cet email est déjà pris. Redirection vers l'étape 1...");
+            window.location.href = 'idfit_inscription_identite.php';
+            return;
+        }
         alert(payload.message || 'Erreur inscription');
         return;
       }
@@ -327,10 +342,18 @@
 
       const payload = await res.json().catch(() => ({}));
 
-      alert(payload.message || "Réponse du serveur inconnue");
-
       if (payload.success) {
-        location.reload(); // Rafraîchir pour voir le nouveau régime actif et le solde
+        alert("Génial ! " + (payload.message || "Votre programme est maintenant actif."));
+        
+        // Faire apparaître le bouton PDF immédiatement s'il existe dans le DOM
+        const pdfBtn = document.querySelector('[data-action="downloadPDF"]');
+        if (pdfBtn) {
+            pdfBtn.style.display = 'inline-block';
+        }
+
+        location.reload(); // Rafraîchir pour mettre à jour tout le dashboard
+      } else {
+        alert("Attention : " + (payload.message || "Vérifiez votre solde ou contactez le support."));
       }
     } catch (error) {
       alert("Erreur réseau lors de la souscription");

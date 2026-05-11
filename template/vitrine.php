@@ -46,7 +46,7 @@
     <section class="section">
         <div class="section-head">
             <h2>Votre parcours, étape par étape</h2>
-            <p class="lead">La vitrine reprend la direction visuelle du projet: tons violets, accents or, cartes arrondies et ambiance premium.</p>
+            <p class="lead">Rejoignez la communauté IdFit et bénéficiez d'un accompagnement exclusif. Passez au statut Gold pour débloquer des tarifs privilégiés sur tous nos programmes.</p>
         </div>
         <div class="features">
 

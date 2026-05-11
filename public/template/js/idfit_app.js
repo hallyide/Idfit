@@ -190,6 +190,13 @@
         window.location.href = result.redirect;
       } else {
         const errorMsg = result.errors ? Object.values(result.errors).join("\n") : "Erreur inconnue";
+        
+        if (result.errors && result.errors.email) {
+            alert("L'adresse email est déjà utilisée. Veuillez retourner à l'étape 1 pour la modifier.");
+            window.location.href = 'idfit_inscription_identite.php';
+            return;
+        }
+        
         alert("Erreur lors de l'inscription :\n" + errorMsg);
       }
     } catch (error) {
@@ -252,11 +259,12 @@
         headers: { 'X-Requested-With': 'XMLHttpRequest' }
       });
       const result = await response.json();
-      
-      alert(result.message);
-      
+
       if (result.success) {
+        alert("Félicitations ! " + (result.message || "Souscription effectuée."));
         window.location.reload();
+      } else {
+        alert("Échec : " + (result.message || "Impossible de souscrire au régime."));
       }
     } catch (error) {
       console.error("Erreur souscription :", error);
@@ -266,7 +274,7 @@
 
   async function downloadPDF() {
     try {
-      const response = await fetch('/api/pdf/rapport', {
+      const response = await fetch('api/pdf/rapport', {
         headers: { Accept: 'application/pdf' },
         credentials: 'same-origin',
       });

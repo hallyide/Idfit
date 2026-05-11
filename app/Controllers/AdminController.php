@@ -62,11 +62,13 @@ class AdminController extends BaseController
                 'statut' => 1,
                 'valide_le' => date('Y-m-d H:i:s')
             ]);
+            
+            $db->transComplete();
+            return redirect()->to(base_url('admin/validation-codes'))->with('message', 'Demande validée et compte crédité !');
         }
 
-        $db->transComplete(); // Valide les changements si tout est OK
-
-        return redirect()->to(base_url('admin/validation-codes'))->with('message', 'Compte rechargé !');
+        $db->transRollback();
+        return redirect()->to(base_url('admin/validation-codes'))->with('message', 'Erreur : Cette demande ne peut plus être traitée.');
     }
     // Affiche la liste des demandes de recharge en attente
     public function listeDemandes()

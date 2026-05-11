@@ -52,6 +52,21 @@
             </tbody>
         </table>
     </div>
+
+    <?php if (!empty($sports)): ?>
+    <div class="box">
+        <h3 style="color: #663266;">Activités Sportives Recommandées</h3>
+        <ul>
+            <?php foreach ($sports as $s): ?>
+                <li>
+                    <strong><?= esc($s['nom']) ?> :</strong> 
+                    <?= esc($s['description']) ?> 
+                    (<?= esc($s['duree_min']) ?> min, <?= esc($s['frequence_semaine']) ?>x / semaine)
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+    <?php endif; ?>
     <?php endif; ?>
 
 </body>
