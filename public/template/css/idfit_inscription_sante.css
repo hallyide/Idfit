@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--p:#663266;--p2:#7a3d7a;--p3:#f0e4f0;--acc:#A2A001;--acc2:#c8c501;--sage:#989866;--navy:#666698;--dark:#320E41;--border:#e8e4ed;--txt:#1a0a1e;--txt2:#5a4a60;--txt3:#8a7a90}
+:root{--p:#663266;--p2:#7a3d7a;--p3:#f0e4f0;--acc:#A2A001;--acc2:#c8c501;--sage:#989866;--navy:#666698;--dark:#320E41;--border:#e8e4ed;--txt:#ffffff;--txt2:#ffffff;--txt3:#f0f0f0}
 body{font-family:'Inter',sans-serif;background:var(--dark);padding:24px;display:flex;justify-content:center}
 .wrap{width:100%;max-width:900px}
 .prog-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
