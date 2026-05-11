@@ -192,6 +192,23 @@ CREATE TABLE codes (
         REFERENCES users(id)
         ON DELETE SET NULL
 );
+-- =========================================================
+-- TABLE DEMANDES_RECHARGE
+-- =========================================================
+
+
+CREATE TABLE demandes_recharge (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    code_id INT NOT NULL,
+    code_utiliser VARCHAR(100) NOT NULL,
+    montant DECIMAL(10,2) NOT NULL,
+    statut INT DEFAULT 0, -- 0: En attente, 1: Validé, -1: Rejeté
+    date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    valide_le TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (code_id) REFERENCES codes(id)
+);
 
 -- =========================================================
 -- TABLE CONFIG_SYSTEM
@@ -218,3 +235,24 @@ ON weight_history(user_id);
 
 CREATE INDEX idx_subscriptions_user
 ON subscriptions(user_id);
+
+CREATE TABLE recharge_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT NOT NULL,
+
+    code_id INT NOT NULL,
+
+    montant DECIMAL(10,2) NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (code_id)
+        REFERENCES codes(id)
+        ON DELETE CASCADE
+);
+
