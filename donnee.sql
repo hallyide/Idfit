@@ -52,6 +52,30 @@ VALUES
     TRUE,
     999999,
     'admin'
+),
+(
+    'Randria',
+    'Paul',
+    'H',
+    'paul@test.com',
+    '123456',
+    170,
+    80,
+    FALSE,
+    0,
+    'user'
+),
+(
+    'Andria',
+    'Mialy',
+    'F',
+    'mialy@test.com',
+    '123456',
+    160,
+    50,
+    TRUE,
+    150000,
+    'user'
 );
 
 -- =========================================================
@@ -98,6 +122,26 @@ VALUES
     34,
     2200,
     60
+),
+(
+    'Vegetarien',
+    'Sans viande',
+    'equilibre',
+    0,
+    40,
+    0,
+    2000,
+    30
+),
+(
+    'Detox',
+    'Cure de purification',
+    'perte',
+    10,
+    20,
+    20,
+    1500,
+    14
 );
 
 -- =========================================================
@@ -136,6 +180,22 @@ VALUES
     200,
     40,
     3
+),
+(
+    'Natation',
+    'Cardio complet et doux',
+    'moyen',
+    400,
+    45,
+    3
+),
+(
+    'Cyclisme',
+    'Endurance',
+    'difficile',
+    600,
+    60,
+    4
 );
 
 -- =========================================================
@@ -228,7 +288,17 @@ VALUES
 ('NP200',20000,FALSE),
 ('NP500',50000,FALSE),
 ('GOLD50',50000,FALSE),
-('VIP100',100000,FALSE);
+('VIP100',100000,FALSE),
+('PROMO10',10000,FALSE),
+('PROMO20',20000,FALSE),
+('PROMO50',50000,FALSE),
+('SUMMER24',30000,FALSE),
+('WINTER24',40000,FALSE),
+('FIT100',100000,FALSE),
+('SPORT50',50000,FALSE),
+('KETO20',20000,FALSE),
+('MEAL10',10000,FALSE),
+('WELCOME',15000,FALSE);
 
 -- =========================================================
 -- CONFIG SYSTEM TEST
