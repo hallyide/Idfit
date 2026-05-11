@@ -46,6 +46,9 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('/', 'AdminController::index');
 
+    $routes->get('validation-codes', 'AdminController::listeDemandes');
+    $routes->get('valider-recharge/(:num)', 'AdminController::validerRecharge/$1');
+
     $routes->get('regimes', 'RegimeController::index');
     $routes->post('regimes', 'RegimeController::create');
     $routes->post('regimes/(:num)/delete', 'RegimeController::delete/$1');

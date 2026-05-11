@@ -41,7 +41,27 @@ class Home extends BaseController
     public function regimes(): ResponseInterface
     {
         $userId = session()->get('user_id');
-        $data = $userId ? (new \App\Services\DashboardService())->getDashboardData((int) $userId) : [];
+        $dashboardService = new \App\Services\DashboardService();
+        $data = $userId ? $dashboardService->getDashboardData((int) $userId) : [];
+
+        // Récupération des régimes avec leurs prix de base
+        $regimeModel = new \App\Models\RegimeModel();
+        $regimes = $regimeModel->getRegimesWithPrice();
+
+        // Pour chaque régime, on vérifie s'il est actif et on récupère les sports liés
+        $db = \Config\Database::connect();
+        foreach ($regimes as &$r) {
+            $r['est_actif'] = ($userId && !empty($data['activeSubscription']) && $data['activeSubscription']['regime_id'] == $r['id']);
+            
+            // Récupération des sports liés au régime via la table de liaison
+            $r['sports'] = $db->table('sports s')
+                              ->join('regime_sports rs', 'rs.sport_id = s.id')
+                              ->where('rs.regime_id', $r['id'])
+                              ->get()->getResultArray();
+        }
+
+        $data['regimes'] = $regimes;
+
         return $this->renderTemplateFile('idfit_regimes.php', $data);
     }
 

@@ -1,11 +1,11 @@
-﻿:root {
+﻿﻿:root {
       --p:#663266;
       --p2:#7a3d7a;
       --p3:#f0e4f0;
       --acc:#A2A001;
       --dark:#320E41;
       --border:#e8e4ed;
-      --txt:#1a0a1e;
+      --txt:#fff;
       --txt2:#5a4a60;
       --txt3:#8a7a90;
       --bg:#f7f4fa;
@@ -272,4 +272,3 @@
         font-size:12px;
       }
     }
-

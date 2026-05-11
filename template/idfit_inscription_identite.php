@@ -52,6 +52,12 @@
         });
       });
     </script>
+    <style>
+      .card-title {
+        color: #0f172a !important; /* Couleur ardoise très sombre pour un contraste maximum */
+        font-weight: 800;
+      }
+    </style>
 </head>
 <body>
 
