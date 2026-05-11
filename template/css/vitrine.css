@@ -5,9 +5,9 @@
             --acc:#A2A001;
             --dark:#320E41;
             --border:#e8e4ed;
-            --txt:#1a1a1a;
-            --txt2:#4a4a4a;
-            --txt3:#737373;
+            --txt:#fff;
+            --txt2:#5a4a60;
+            --txt3:#8a7a90;
             --bg:#f7f4fa;
         }
 
@@ -325,14 +325,14 @@
         }
 
         .cta h2 {
-            color:#0c0a0a;
+            color:#fff;
             margin-bottom:12px;
         }
 
         .cta p {
             margin:0 auto 24px;
             max-width:640px;
-            color:rgba(5, 4, 4, 0.78);
+            color:rgba(255,255,255,0.78);
             line-height:1.7;
         }
 
