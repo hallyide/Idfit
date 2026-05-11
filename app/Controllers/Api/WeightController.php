@@ -17,6 +17,10 @@ class WeightController extends ResourceController
         $date = $this->request->getVar('date_mesure') ?? date('Y-m-d');
         $userId = session()->get('user_id');
 
+        if (!$userId) {
+            return $this->sendError('Utilisateur non connecté', 401);
+        }
+
         if ($poids <= 0) {
             return $this->sendError('Poids invalide');
         }
@@ -26,7 +30,10 @@ class WeightController extends ResourceController
         if ($model->insert(['user_id' => $userId, 'poids' => $poids, 'date_mesure' => $date])) {
             // Mise à jour du profil utilisateur
             (new UserModel())->update($userId, ['poids' => $poids]);
-            return $this->sendSuccess("Poids ajouté avec succès");
+            return $this->sendSuccess("Poids ajouté avec succès", [
+                'poids' => $poids,
+                'date_mesure' => $date,
+            ]);
         }
         
         return $this->sendError($model->errors());
@@ -35,6 +42,10 @@ class WeightController extends ResourceController
     public function getHistory()
     {
         $userId = session()->get('user_id');
+        if (!$userId) {
+            return $this->sendError('Utilisateur non connecté', 401);
+        }
+
         $history = (new WeightHistoryModel())
             ->where('user_id', $userId)
             ->orderBy('date_mesure', 'DESC')
@@ -48,9 +59,22 @@ class WeightController extends ResourceController
     public function getChartData()
     {
         $userId = session()->get('user_id');
+        if (!$userId) {
+            return $this->sendError('Utilisateur non connecté', 401);
+        }
+
         $model = new WeightHistoryModel();
         
         $history = $model->where('user_id', $userId)->orderBy('date_mesure', 'ASC')->findAll();
+        if (!$history) {
+            $user = (new UserModel())->find((int) $userId);
+            if ($user && (float) ($user['poids'] ?? 0) > 0) {
+                $history = [[
+                    'date_mesure' => $user['created_at'] ?? date('Y-m-d'),
+                    'poids' => $user['poids'],
+                ]];
+            }
+        }
         
         $labels = [];
         $data = [];

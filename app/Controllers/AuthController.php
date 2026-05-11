@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
+use App\Models\WeightHistoryModel;
 use CodeIgniter\Controller;
 
 class AuthController extends BaseController
@@ -89,8 +90,12 @@ class AuthController extends BaseController
     public function registerFull() {
 
         $rules = [
-            'email' => 'required|is_unique[users.email]',
-            'password' => 'required|min_length[6]'
+            'nom' => 'required|min_length[2]',
+            'prenom' => 'required|min_length[2]',
+            'email' => 'required|valid_email|is_unique[users.email]',
+            'password' => 'required|min_length[8]',
+            'taille' => 'required|numeric|greater_than[50]',
+            'poids' => 'required|numeric|greater_than[20]',
         ];
 
         if (!$this->validate($rules)) {
@@ -109,6 +114,18 @@ class AuthController extends BaseController
         ];
 
         if ($this->userModel->insert($data)) {
+            $userId = (int) $this->userModel->getInsertID();
+            (new WeightHistoryModel())->insert([
+                'user_id' => $userId,
+                'poids' => (float) $data['poids'],
+                'date_mesure' => date('Y-m-d'),
+            ]);
+            $this->session->set([
+                'user_id' => $userId,
+                'role' => 'user',
+                'is_logged_in' => true,
+            ]);
+
             return $this->response->setJSON([
                 'status' => 'success', 
                 'redirect' => base_url('idfit_dashboard_user.php')
@@ -119,5 +136,12 @@ class AuthController extends BaseController
             'status' => 'error',
             'errors' => $this->userModel->errors()
         ]);
+    }
+
+    public function logout()
+    {
+        $this->session->destroy();
+
+        return redirect()->to(base_url('idfit_connexion.php'));
     }
 }

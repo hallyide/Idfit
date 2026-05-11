@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--p:#663266;--p2:#7a3d7a;--p3:#f0e4f0;--acc:#A2A001;--sage:#989866;--navy:#666698;--dark:#320E41;--border:#e8e4ed;--txt:#1a1a1a;--txt2:#5a4a60;--txt3:#8a7a90;--bg:#f7f4fa}
+:root{--p:#663266;--p2:#7a3d7a;--p3:#f0e4f0;--acc:#A2A001;--sage:#989866;--navy:#666698;--dark:#320E41;--border:#e8e4ed;--txt:#1a0a1e;--txt2:#5a4a60;--txt3:#8a7a90;--bg:#f7f4fa}
 body{font-family:'Inter',sans-serif;background:var(--dark);padding:24px;display:flex;justify-content:center}
 .wrap{width:100%;max-width:900px}
 .prog-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
@@ -19,7 +19,7 @@ body{font-family:'Inter',sans-serif;background:var(--dark);padding:24px;display:
 .pstep-line.done{background:var(--acc)}
 .pstep-line.idle{background:rgba(255,255,255,0.15)}
 .card{background:#fff;border-radius:16px;padding:32px 36px}
-.card-title{font-size:20px;font-weight:600;color:#fff;margin-bottom:4px}
+.card-title{font-size:20px;font-weight:600;color:var(--txt);margin-bottom:4px}
 .card-sub{font-size:13px;color:var(--txt3);margin-bottom:28px}
 .layout{display:flex;gap:24px}
 .form-col{flex:1}
@@ -30,6 +30,9 @@ body{font-family:'Inter',sans-serif;background:var(--dark);padding:24px;display:
 .inp{width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 40px 10px 14px;font-size:14px;color:var(--txt);background:#fafafa;font-family:'Inter',sans-serif;outline:none}
 .inp:focus{border-color:var(--p);background:#fff}
 .inp.ok{border-color:var(--acc);background:#fefff0}
+.inp.invalid{border-color:#cc3333;background:#fff7f7}
+.inp.valid{border-color:#1D9E75;background:#f7fffb}
+.err-msg{display:none;align-items:center;gap:5px;margin-top:6px;color:#b42318;font-size:12px;font-weight:600}
 .unit{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--txt3);font-weight:500}
 .obj-list{display:flex;flex-direction:column;gap:8px}
 .obj-item{padding:12px 14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:12px;background:#fafafa}

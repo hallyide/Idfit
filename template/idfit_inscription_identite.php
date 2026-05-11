@@ -9,23 +9,83 @@
     
     <script src="js/idfit_app.js"></script>
     <script>
-      function preparerEtape1() {
-        // Validation simple avant envoi
-        const prenom = document.getElementById('prenom').value;
-        const nom = document.getElementById('nom').value;
-        const email = document.getElementById('email').value;
+      const validators = {
+        prenom: value => value.trim().length >= 2 ? '' : 'Le prénom doit contenir au moins 2 lettres.',
+        nom: value => value.trim().length >= 2 ? '' : 'Le nom doit contenir au moins 2 lettres.',
+        email: value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()) ? '' : 'Adresse email invalide.',
+        password: value => value.length >= 8 ? '' : 'Le mot de passe doit contenir au moins 8 caractères.',
+        'confirm-password': value => value === document.getElementById('password').value ? '' : 'Les mots de passe ne correspondent pas.'
+      };
+
+      function setFieldError(id, message) {
+        const input = document.getElementById(id);
+        const error = document.getElementById(`${id}-error`) || document.getElementById('email-status');
+        if (!input || !error) return;
+
+        input.classList.toggle('invalid', Boolean(message));
+        input.classList.toggle('valid', !message && input.value.trim() !== '');
+        error.style.display = message ? 'flex' : 'none';
+        error.innerHTML = message ? `<i class="ti ti-alert-circle" aria-hidden="true"></i> ${message}` : '';
+      }
+
+      async function validateEmailAvailability() {
+        const emailInput = document.getElementById('email');
+        const email = emailInput.value.trim();
+        const localError = validators.email(email);
+        if (localError) {
+          setFieldError('email', localError);
+          return false;
+        }
+
+        setFieldError('email', '');
+        try {
+          const response = await fetch(`/api/check-email?email=${encodeURIComponent(email)}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+          });
+          // const result = await response.json();
+          // const message = result.data?.message || result.errors?.email || result.error;
+          // const available = Boolean(result.success && result.data?.available);
+
+          // setFieldError('email', available ? '' : (message || 'Cette adresse email est déjà utilisée.'));
+
+          const result = await response.json();
+
+          console.log(result);
+
+          const message = result.data?.message || result.errors?.email || result.error;
+          const available = Boolean(result.data?.available);
+
+          setFieldError(
+            'email',
+            available ? '' : (message || 'Cette adresse email est déjà utilisée.')
+          );
+
+          return available;
+        } catch (error) {
+          setFieldError('email', "Impossible de vérifier l'email pour le moment.");
+          return false;
+        }
+      }
+
+      async function validateIdentityForm() {
+        let isValid = true;
+        ['prenom', 'nom', 'password', 'confirm-password'].forEach(id => {
+          const message = validators[id](document.getElementById(id).value);
+          setFieldError(id, message);
+          if (message) isValid = false;
+        });
+
+        const emailOk = await validateEmailAvailability();
+        return isValid && emailOk;
+      }
+
+      async function preparerEtape1() {
+        if (!await validateIdentityForm()) return;
+
+        const prenom = document.getElementById('prenom').value.trim();
+        const nom = document.getElementById('nom').value.trim();
+        const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
-        const confirm = document.getElementById('confirm-password').value;
-
-        if (!prenom || !nom || !email || !password) {
-            alert("Veuillez remplir tous les champs.");
-            return;
-        }
-
-        if (password !== confirm) {
-            alert("Les mots de passe ne correspondent pas.");
-            return;
-        }
 
         // On rassemble les données
         const identite = {
@@ -50,6 +110,19 @@
             btn.classList.add('on');
           });
         });
+
+        ['prenom', 'nom', 'password', 'confirm-password'].forEach(id => {
+          const input = document.getElementById(id);
+          input.addEventListener('blur', () => setFieldError(id, validators[id](input.value)));
+          input.addEventListener('input', () => {
+            if (input.classList.contains('invalid')) setFieldError(id, validators[id](input.value));
+            if (id === 'password' && document.getElementById('confirm-password').value) {
+              setFieldError('confirm-password', validators['confirm-password'](document.getElementById('confirm-password').value));
+            }
+          });
+        });
+
+        document.getElementById('email').addEventListener('blur', validateEmailAvailability);
       });
     </script>
     <style>
@@ -86,16 +159,16 @@
       <div class="hint-txt" style="color: white;">Vos données sont protégées et ne seront jamais partagées avec des tiers.</div>
     </div>
 
-    <form id="identity-form" onsubmit="event.preventDefault(); preparerEtape1();">
-      <div class="row2">
-        <div class="field">
-          <label class="flabel" for="prenom"><i class="ti ti-user" aria-hidden="true"></i> Prénom</label>
-          <input id="prenom" name="prenom" class="inp" placeholder="Ex: Finaritra" autocomplete="given-name" required>
-        </div>
-        <div class="field">
-          <label class="flabel" for="nom"><i class="ti ti-user" aria-hidden="true"></i> Nom</label>
-          <input id="nom" name="nom" class="inp" placeholder="Ex: Rakoto" autocomplete="family-name" required>
-        </div>
+    <div class="row2">
+      <div class="field">
+        <div class="flabel"><i class="ti ti-user" aria-hidden="true"></i> Prénom</div>
+        <input id="prenom" class="inp" placeholder="Ex: Finaritra">
+        <div id="prenom-error" class="err-msg"></div>
+      </div>
+      <div class="field">
+        <div class="flabel"><i class="ti ti-user" aria-hidden="true"></i> Nom</div>
+        <input id="nom" class="inp" placeholder="Ex: Rakoto">
+        <div id="nom-error" class="err-msg"></div>
       </div>
 
       <div class="field">
@@ -106,37 +179,26 @@
           <button type="button" class="genre-btn"><i class="ti ti-gender-bigender" aria-hidden="true"></i> Autre</button>
         </div>
       </div>
+      
+    <div class="field">
+      <div class="flabel"><i class="ti ti-mail" aria-hidden="true"></i> Email</div>
+      <input id="email" class="inp" type="email" placeholder="votre@email.com">
+      <div id="email-status" class="err-msg"></div>
+    </div>
 
+    <div class="row2">
       <div class="field">
-        <label class="flabel" for="email"><i class="ti ti-mail" aria-hidden="true"></i> Email</label>
-        <input id="email" name="email" class="inp" type="email" placeholder="votre@email.com" autocomplete="email" required>
-        <div id="email-status" class="err-msg" style="display:none;">
-          <i class="ti ti-alert-circle" aria-hidden="true"></i> Adresse email invalide
+        <div class="flabel"><i class="ti ti-lock" aria-hidden="true"></i> Mot de passe</div>
+        <input id="password" class="inp" type="password" placeholder="••••••••">
+        <div id="password-error" class="err-msg"></div>
+        <div class="pw-bar">
+          <div class="ps"></div><div class="ps"></div><div class="ps"></div><div class="ps"></div>
         </div>
       </div>
-
-      <div class="row2">
-        <div class="field">
-          <label class="flabel" for="password"><i class="ti ti-lock" aria-hidden="true"></i> Mot de passe</label>
-          <div class="password-wrapper" style="position:relative; display:flex; align-items:center;">
-            <input id="password" name="password" class="inp" type="password" placeholder="••••••••" autocomplete="new-password" required style="width:100%; padding-right:40px;">
-            <button type="button" class="btn-toggle-password" onclick="togglePassword('password', 'eye-icon-pw')" style="position:absolute; right:10px; background:transparent; border:none; color:#888; cursor:pointer; font-size:22px;" aria-label="Afficher le mot de passe">
-              <i id="eye-icon-pw" class="ti ti-eye" aria-hidden="true"></i>
-            </button>
-          </div>
-          <div class="pw-bar">
-            <div class="ps"></div><div class="ps"></div><div class="ps"></div><div class="ps"></div>
-          </div>
-        </div>
-        <div class="field">
-          <label class="flabel" for="confirm-password"><i class="ti ti-lock-check" aria-hidden="true"></i> Confirmer mot de passe</label>
-          <div class="password-wrapper" style="position:relative; display:flex; align-items:center;">
-            <input id="confirm-password" name="confirm-password" class="inp" type="password" placeholder="••••••••" autocomplete="new-password" required style="width:100%; padding-right:40px;">
-            <button type="button" class="btn-toggle-password" onclick="togglePassword('confirm-password', 'eye-icon-conf')" style="position:absolute; right:10px; background:transparent; border:none; color:#888; cursor:pointer; font-size:22px;" aria-label="Afficher le mot de passe">
-              <i id="eye-icon-conf" class="ti ti-eye" aria-hidden="true"></i>
-            </button>
-          </div>
-        </div>
+      <div class="field">
+        <div class="flabel"><i class="ti ti-lock-check" aria-hidden="true"></i> Confirmer mot de passe</div>
+        <input id="confirm-password" class="inp" type="password" placeholder="••••••••">
+        <div id="confirm-password-error" class="err-msg"></div>
       </div>
 
       <div class="btn-row">
