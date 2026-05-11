@@ -11,6 +11,7 @@
   const API_WEIGHT_ADD = '/api/weight';
   const API_WALLET_RECHARGE = '/wallet/recharge';
   const API_GOLD_UPGRADE = '/gold/upgrade';
+  const API_PDF_RAPPORT = '/api/pdf/rapport';
 
   const API_TEMP_USER_KEY = 'idfit_temp_user_v1';
 
@@ -51,7 +52,8 @@
     document.querySelectorAll('[data-wallet-balance]').forEach((n) => {
       n.textContent = value + ' Ar';
     });
-    const walletBalanceNode = document.getElementById('wallet-balance');
+    // On cible l'ID spécifique de la page finance s'il existe
+    const walletBalanceNode = document.getElementById('wallet-balance') || document.querySelector('.w-amount span#wallet-balance');
     if (walletBalanceNode) walletBalanceNode.textContent = value;
   }
 
@@ -88,10 +90,19 @@
         document.querySelector('.page-title').textContent = 'Bonjour, ' + prenom + ' 👋';
       }
 
-      // IMC (si présents sur la page)
-      if (document.getElementById('imc-val') && user.poids != null) {
-        setTextById('imc-val', Number(user.poids).toFixed(1));
+      // Mise à jour des metrics sur le dashboard
+      if (user.poids != null) {
+        setTextById('display-weight', Number(user.poids).toFixed(1));
       }
+      
+      // On peut recalculer l'IMC ou attendre que le serveur le renvoie
+      if (user.taille && user.poids) {
+        const h = user.taille / 100;
+        const imc = (user.poids / (h * h)).toFixed(1);
+        setTextById('display-imc', imc);
+      }
+
+      setTextById('display-weight-date', 'Dernière mise à jour : ' + new Date().toLocaleDateString());
 
       setWalletBalanceUI(walletBalance);
       setGoldStatusUI(isGold);
@@ -128,8 +139,8 @@
 
       await syncProfile();
 
-      const role = (payload.data && payload.data.user && payload.data.user.role) || payload.role || 'user';
-      window.location.href = role === 'admin' ? 'idfit_admin.php' : 'idfit_dashboard_user.php';
+      // Utilise la redirection fournie par le serveur, sinon fallback
+      window.location.href = (payload.data && payload.data.redirect) || 'idfit_dashboard_user.php';
     } catch {
       setMessage(messageEl, 'Erreur connexion', 'bad');
     }
@@ -227,6 +238,11 @@
       const payload = await res.json().catch(() => ({}));
 
       if (!res.ok || !payload || !payload.success) {
+        if (payload.errors && payload.errors.email) {
+            alert("Cet email est déjà pris. Redirection vers l'étape 1...");
+            window.location.href = 'idfit_inscription_identite.php';
+            return;
+        }
         alert(payload.message || 'Erreur inscription');
         return;
       }
@@ -300,10 +316,47 @@
         return;
       }
 
-      setWalletBalanceUI(payload.solde);
-      alert('Compte credite');
+      if (codeInput) codeInput.value = '';
+      alert('Demande envoyée');
     } catch {
       alert('Erreur réseau');
+    }
+  }
+
+  async function subscribeToRegime(buttonEl) {
+    const regimeId = buttonEl.dataset.regimeId;
+    const duree = buttonEl.dataset.duree;
+
+    if (!regimeId || !duree) return;
+    if (!confirm("Voulez-vous souscrire à ce régime ?")) return;
+
+    try {
+      const res = await fetch('/subscription/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: `regime_id=${regimeId}&duree_mois=${duree}`
+      });
+
+      const payload = await res.json().catch(() => ({}));
+
+      if (payload.success) {
+        alert("Génial ! " + (payload.message || "Votre programme est maintenant actif."));
+        
+        // Faire apparaître le bouton PDF immédiatement s'il existe dans le DOM
+        const pdfBtn = document.querySelector('[data-action="downloadPDF"]');
+        if (pdfBtn) {
+            pdfBtn.style.display = 'inline-block';
+        }
+
+        location.reload(); // Rafraîchir pour mettre à jour tout le dashboard
+      } else {
+        alert("Attention : " + (payload.message || "Vérifiez votre solde ou contactez le support."));
+      }
+    } catch (error) {
+      alert("Erreur réseau lors de la souscription");
     }
   }
 
@@ -329,6 +382,40 @@
     }
   }
 
+  async function downloadPDF() {
+    try {
+      const res = await fetch(API_PDF_RAPPORT, {
+        headers: { Accept: 'application/pdf' },
+        credentials: 'same-origin',
+      });
+
+      if (!res.ok) {
+        const isJson = res.headers.get('content-type')?.includes('application/json');
+        const payload = isJson ? await res.json() : {};
+        alert(payload.message || 'Erreur lors de la génération du PDF');
+        return;
+      }
+
+      // Succès : Récupération du blob et déclenchement du téléchargement
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'rapport_idfit.pdf';
+      document.body.appendChild(a);
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+      a.remove();
+
+      alert('PDF téléchargé avec succès !');
+    } catch (error) {
+      console.error('Erreur PDF:', error);
+      alert('Impossible de contacter le serveur pour générer le PDF.');
+    }
+  }
+
   function bindDeclarativeActions() {
     document.addEventListener('click', (event) => {
       const actionEl = event.target.closest('[data-action]');
@@ -344,12 +431,14 @@
         updateWeightHistory,
         creditWallet,
         upgradeToGold,
+        downloadPDF,
+        subscribeToRegime,
       };
 
       const fn = map[actionName];
       if (typeof fn === 'function') {
         event.preventDefault();
-        fn();
+        fn(actionEl); // On passe l'élément pour pouvoir lire ses attributs data
       }
     });
   }

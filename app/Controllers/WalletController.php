@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\CodeModel;
 use App\Models\UserModel;
 use App\Models\RechargeHistoryModel;
+use App\Models\Demande_rechargeModel;
 
 class WalletController extends BaseController
 {
@@ -22,8 +23,7 @@ class WalletController extends BaseController
         $codeValue = $this->request->getPost('code');
 
         $codeModel = new CodeModel();
-        $userModel = new UserModel();
-        $historyModel = new RechargeHistoryModel();
+        $demandeModel = new Demande_rechargeModel();
 
         $code = $codeModel
             ->where('code', $codeValue)
@@ -38,39 +38,27 @@ class WalletController extends BaseController
             ]);
         }
 
-        $user = $userModel->find($userId);
-
-        if (!$user) {
-            return $this->response->setStatusCode(404)->setJSON([
+        // Vérifier si une demande identique est déjà en attente pour ce code
+        $existing = $demandeModel->where('code_id', $code['id'])
+                                 ->where('statut', 0)
+                                 ->first();
+        if ($existing) {
+            return $this->response->setJSON([
                 'success' => false,
-                'message' => 'Utilisateur introuvable'
+                'message' => 'Cette demande est déjà en cours de validation.'
             ]);
         }
 
-        $nouveauSolde =
-            $user['wallet_balance']
-            + $code['valeur'];
-
-        $userModel->update($userId, [
-            'wallet_balance' => $nouveauSolde
-        ]);
-
-        $codeModel->update($code['id'], [
-            'is_used' => 1,
-            'used_by' => $userId,
-            'used_at' => date('Y-m-d H:i:s')
-        ]);
-
-        $historyModel->save([
+        // Au lieu de créditer, on crée la demande
+        $demandeModel->save([
             'user_id' => $userId,
             'code_id' => $code['id'],
-            'montant' => $code['valeur']
+            'statut'  => 0 // En attente
         ]);
 
         return $this->response->setJSON([
             'success' => true,
-            'message' => 'Recharge effectuee',
-            'solde' => $nouveauSolde
+            'message' => 'Demande envoyée, en attente de validation admin.'
         ]);
     }
 }

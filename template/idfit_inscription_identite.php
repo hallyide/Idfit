@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>IdFit — Inscription Étape 1</title>
-    <link rel="stylesheet" href="css/idfit_inscription_identite.css">
-    <link rel="stylesheet" href="css/inline.css">
+    <link rel="stylesheet" href="css/idfit_inscription_identite.css?v=1778498828">
+    <link rel="stylesheet" href="css/inline.css?v=1778498828">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     
     <script src="js/idfit_app.js"></script>
@@ -52,6 +52,12 @@
         });
       });
     </script>
+    <style>
+      .card-title {
+        color: #0f172a !important; /* Couleur ardoise très sombre pour un contraste maximum */
+        font-weight: 800;
+      }
+    </style>
 </head>
 <body>
 
@@ -77,59 +83,87 @@
 
     <div class="hint-box">
       <i class="ti ti-shield-check hint-ico" aria-hidden="true"></i>
-      <div class="hint-txt">Vos données sont protégées et ne seront jamais partagées avec des tiers.</div>
+      <div class="hint-txt" style="color: white;">Vos données sont protégées et ne seront jamais partagées avec des tiers.</div>
     </div>
 
-    <div class="row2">
-      <div class="field">
-        <div class="flabel"><i class="ti ti-user" aria-hidden="true"></i> Prénom</div>
-        <input id="prenom" class="inp" placeholder="Ex: Finaritra">
-      </div>
-      <div class="field">
-        <div class="flabel"><i class="ti ti-user" aria-hidden="true"></i> Nom</div>
-        <input id="nom" class="inp" placeholder="Ex: Rakoto">
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="flabel"><i class="ti ti-users" aria-hidden="true"></i> Genre</div>
-      <div class="genre-row">
-        <button type="button" class="genre-btn on"><i class="ti ti-gender-male" aria-hidden="true"></i> Homme</button>
-        <button type="button" class="genre-btn"><i class="ti ti-gender-female" aria-hidden="true"></i> Femme</button>
-        <button type="button" class="genre-btn"><i class="ti ti-gender-bigender" aria-hidden="true"></i> Autre</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="flabel"><i class="ti ti-mail" aria-hidden="true"></i> Email</div>
-      <input id="email" class="inp" type="email" placeholder="votre@email.com">
-      <div id="email-status" class="err-msg" style="display:none;">
-        <i class="ti ti-alert-circle" aria-hidden="true"></i> Adresse email invalide
-      </div>
-    </div>
-
-    <div class="row2">
-      <div class="field">
-        <div class="flabel"><i class="ti ti-lock" aria-hidden="true"></i> Mot de passe</div>
-        <input id="password" class="inp" type="password" placeholder="••••••••">
-        <div class="pw-bar">
-          <div class="ps"></div><div class="ps"></div><div class="ps"></div><div class="ps"></div>
+    <form id="identity-form" onsubmit="event.preventDefault(); preparerEtape1();">
+      <div class="row2">
+        <div class="field">
+          <label class="flabel" for="prenom"><i class="ti ti-user" aria-hidden="true"></i> Prénom</label>
+          <input id="prenom" name="prenom" class="inp" placeholder="Ex: Finaritra" autocomplete="given-name" required>
+        </div>
+        <div class="field">
+          <label class="flabel" for="nom"><i class="ti ti-user" aria-hidden="true"></i> Nom</label>
+          <input id="nom" name="nom" class="inp" placeholder="Ex: Rakoto" autocomplete="family-name" required>
         </div>
       </div>
-      <div class="field">
-        <div class="flabel"><i class="ti ti-lock-check" aria-hidden="true"></i> Confirmer mot de passe</div>
-        <input id="confirm-password" class="inp" type="password" placeholder="••••••••">
-      </div>
-    </div>
 
-    <div class="btn-row">
-      <a href="idfit_connexion.php" class="btn-sec">Annuler</a>
-      <button class="btn-main" onclick="preparerEtape1()">
-        Continuer <i class="ti ti-arrow-right" aria-hidden="true"></i>
-      </button>
-    </div>
+      <div class="field">
+        <div class="flabel"><i class="ti ti-users" aria-hidden="true"></i> Genre</div>
+        <div class="genre-row">
+          <button type="button" class="genre-btn on"><i class="ti ti-gender-male" aria-hidden="true"></i> Homme</button>
+          <button type="button" class="genre-btn"><i class="ti ti-gender-female" aria-hidden="true"></i> Femme</button>
+          <button type="button" class="genre-btn"><i class="ti ti-gender-bigender" aria-hidden="true"></i> Autre</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="flabel" for="email"><i class="ti ti-mail" aria-hidden="true"></i> Email</label>
+        <input id="email" name="email" class="inp" type="email" placeholder="votre@email.com" autocomplete="email" required>
+        <div id="email-status" class="err-msg" style="display:none;">
+          <i class="ti ti-alert-circle" aria-hidden="true"></i> Adresse email invalide
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label class="flabel" for="password"><i class="ti ti-lock" aria-hidden="true"></i> Mot de passe</label>
+          <div class="password-wrapper" style="position:relative; display:flex; align-items:center;">
+            <input id="password" name="password" class="inp" type="password" placeholder="••••••••" autocomplete="new-password" required style="width:100%; padding-right:40px;">
+            <button type="button" class="btn-toggle-password" onclick="togglePassword('password', 'eye-icon-pw')" style="position:absolute; right:10px; background:transparent; border:none; color:#888; cursor:pointer; font-size:22px;" aria-label="Afficher le mot de passe">
+              <i id="eye-icon-pw" class="ti ti-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="pw-bar">
+            <div class="ps"></div><div class="ps"></div><div class="ps"></div><div class="ps"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="flabel" for="confirm-password"><i class="ti ti-lock-check" aria-hidden="true"></i> Confirmer mot de passe</label>
+          <div class="password-wrapper" style="position:relative; display:flex; align-items:center;">
+            <input id="confirm-password" name="confirm-password" class="inp" type="password" placeholder="••••••••" autocomplete="new-password" required style="width:100%; padding-right:40px;">
+            <button type="button" class="btn-toggle-password" onclick="togglePassword('confirm-password', 'eye-icon-conf')" style="position:absolute; right:10px; background:transparent; border:none; color:#888; cursor:pointer; font-size:22px;" aria-label="Afficher le mot de passe">
+              <i id="eye-icon-conf" class="ti ti-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <a href="idfit_connexion.php" class="btn-sec">Annuler</a>
+        <button type="submit" class="btn-main">
+          Continuer <i class="ti ti-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </form>
   </div>
 </div>
+
+<script>
+    function togglePassword(inputId, iconId) {
+        const passwordInput = document.getElementById(inputId);
+        const eyeIcon = document.getElementById(iconId);
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('ti-eye');
+            eyeIcon.classList.add('ti-eye-off');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('ti-eye-off');
+            eyeIcon.classList.add('ti-eye');
+        }
+    }
+</script>
 
 </body>
 </html>

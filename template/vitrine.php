@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/vitrine.css">
-  <link rel="stylesheet" href="css/inline.css">
+  <link rel="stylesheet" href="css/vitrine.css?v=2">
+  <link rel="stylesheet" href="css/inline.css?v=1778498828">
 </head>
 
 <body>
@@ -46,7 +46,7 @@
     <section class="section">
         <div class="section-head">
             <h2>Votre parcours, étape par étape</h2>
-            <p class="lead">La vitrine reprend la direction visuelle du projet: tons violets, accents or, cartes arrondies et ambiance premium.</p>
+            <p class="lead">Rejoignez la communauté IdFit et bénéficiez d'un accompagnement exclusif. Passez au statut Gold pour débloquer des tarifs privilégiés sur tous nos programmes.</p>
         </div>
         <div class="features">
 

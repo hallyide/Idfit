@@ -20,4 +20,11 @@ class RegimeModel extends Model
         'calories_jour',
         'duree_moyenne'
     ];
+    public function getRegimesWithPrice()
+    {
+        return $this->select('regimes.*, prix_regime.prix as prix_base')
+                    ->join('prix_regime', 'prix_regime.regime_id = regimes.id', 'left')
+                    ->groupBy('regimes.id')
+                    ->findAll();
+    }
 }

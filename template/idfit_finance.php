@@ -3,9 +3,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<link rel="stylesheet" href="css/header.css">
-<link rel="stylesheet" href="css/idfit_finance.css">
-  <link rel="stylesheet" href="css/inline.css">
+<link rel="stylesheet" href="css/header.css?v=1778498828">
+<link rel="stylesheet" href="css/idfit_finance.css?v=1778498828">
+  <link rel="stylesheet" href="css/inline.css?v=1778498828">
 <script src="js/idfit_app.js"></script>
 
 
@@ -89,13 +89,19 @@
         <div class="card-title"><i class="ti ti-wallet u-style-23" aria-hidden="true"></i> Mon portefeuille</div>
         <div class="wallet-hero">
           <div class="w-label">Solde disponible</div>
-          <div class="w-amount"><span id="wallet-balance">0</span> <span class="w-unit">Ar</span></div>
-          <div class="w-status"><i class="ti ti-circle-x u-style-1" aria-hidden="true"></i> Compte Gold inactif</div>
+          <div class="w-amount"><span id="wallet-balance"><?= number_format($walletBalance ?? 0, 0, ',', ' ') ?></span> <span class="w-unit">Ar</span></div>
+          <div class="w-status">
+            <?php if ($isGold ?? false): ?>
+              <i class="ti ti-circle-check u-style-1" aria-hidden="true"></i> Compte Gold actif
+            <?php else: ?>
+              <i class="ti ti-circle-x u-style-1" aria-hidden="true"></i> Compte Gold inactif
+            <?php endif; ?>
+          </div>
         </div>
         <label class="flabel">Entrer un code de recharge</label>
         <div class="inp-row">
           <input id="wallet-code" class="inp" placeholder="" maxlength="14">
-          <button id="wallet-credit" class="btn-enc"><i class="ti ti-coins" aria-hidden="true"></i> Encaisser</button>
+          <button id="wallet-credit" class="btn-enc" data-action="creditWallet"><i class="ti ti-coins" aria-hidden="true"></i> Encaisser</button>
         </div>
         <div class="u-style-24">
           <i class="ti ti-info-circle u-style-1" aria-hidden="true"></i> Les codes sont à usage unique et non remboursables
@@ -120,11 +126,15 @@
             <div class="perk"><i class="ti ti-infinity" aria-hidden="true"></i> Accès à vie (paiement unique)</div>
           </div>
           <div class="gc-price">
-            <span class="gp-val">20 000</span>
+            <span class="gp-val"><?= number_format($goldPrice ?? 20000, 0, ',', ' ') ?></span>
             <span class="gp-unit">Ar</span>
             <span class="gp-type">— paiement unique</span>
           </div>
-          <button id="gold-action" class="btn-gold" data-action="upgradeToGold"><i class="ti ti-star" aria-hidden="true"></i> Devenir Gold</button>
+          <?php if (!($isGold ?? false)): ?>
+            <button id="gold-action" class="btn-gold" data-action="upgradeToGold"><i class="ti ti-star" aria-hidden="true"></i> Devenir Gold</button>
+          <?php else: ?>
+            <button class="btn-gold" style="background: #10b981; cursor: default;"><i class="ti ti-check" aria-hidden="true"></i> Membre Gold</button>
+          <?php endif; ?>
         </div>
       </div>
     </div>

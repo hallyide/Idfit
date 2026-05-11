@@ -23,6 +23,18 @@
         e.preventDefault();
         authenticateUser();
       }
+      if (action === 'creditWallet') {
+        e.preventDefault();
+        creditWallet();
+      }
+      if (action === 'downloadPDF') {
+        e.preventDefault();
+        downloadPDF();
+      }
+      if (action === 'subscribeToRegime') {
+        e.preventDefault();
+        subscribeToRegime(target);
+      }
     });
 
     // Détection des composants spécifiques aux pages
@@ -68,7 +80,7 @@
 
       if (result.success || result.status === 'success') {
         // Redirection vers le dashboard après succès
-        window.location.href = result.redirect || 'idfit_dashboard_user.php';
+        window.location.href = (result.data && result.data.redirect) || result.redirect || 'idfit_dashboard_user.php';
       } else {
         alert(result.message || "Identifiants incorrects.");
       }
@@ -178,11 +190,117 @@
         window.location.href = result.redirect;
       } else {
         const errorMsg = result.errors ? Object.values(result.errors).join("\n") : "Erreur inconnue";
+        
+        if (result.errors && result.errors.email) {
+            alert("L'adresse email est déjà utilisée. Veuillez retourner à l'étape 1 pour la modifier.");
+            window.location.href = 'idfit_inscription_identite.php';
+            return;
+        }
+        
         alert("Erreur lors de l'inscription :\n" + errorMsg);
       }
     } catch (error) {
       console.error("Erreur de connexion :", error);
       alert("Erreur de communication avec le serveur. Vérifiez que le backend est lancé sur le bon port.");
+    }
+  }
+
+  /**
+   * PORTEFEUILLE : ENCAISSER UN CODE (RECHARGE)
+   */
+  async function creditWallet() {
+    const codeInput = document.getElementById('wallet-code');
+    if (!codeInput) return;
+
+    const code = codeInput.value.trim();
+    if (!code) {
+      alert("Veuillez saisir un code de recharge.");
+      return;
+    }
+
+    try {
+      const response = await fetch('/wallet/recharge', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: 'code=' + encodeURIComponent(code)
+      });
+
+      const result = await response.json();
+      
+      alert(result.message);
+      
+      if (result.success) {
+        codeInput.value = '';
+      }
+    } catch (error) {
+      console.error("Erreur lors de la recharge :", error);
+      alert("Impossible de contacter le serveur pour la recharge.");
+    }
+  }
+
+  async function subscribeToRegime(target) {
+    const regimeId = target.dataset.regimeId;
+    const duree = target.dataset.duree;
+
+    if (!regimeId || !duree) return;
+    if (!confirm("Voulez-vous vraiment souscrire à ce régime ?")) return;
+
+    const formData = new FormData();
+    formData.append('regime_id', regimeId);
+    formData.append('duree_mois', duree);
+
+    try {
+      const response = await fetch('/subscription/subscribe', {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        alert("Félicitations ! " + (result.message || "Souscription effectuée."));
+        window.location.reload();
+      } else {
+        alert("Échec : " + (result.message || "Impossible de souscrire au régime."));
+      }
+    } catch (error) {
+      console.error("Erreur souscription :", error);
+      alert("Erreur de communication avec le serveur.");
+    }
+  }
+
+  async function downloadPDF() {
+    try {
+      const response = await fetch('api/pdf/rapport', {
+        headers: { Accept: 'application/pdf' },
+        credentials: 'same-origin',
+      });
+
+      if (!response.ok) {
+        const isJson = response.headers.get('content-type')?.includes('application/json');
+        const result = isJson ? await response.json() : {};
+        alert(result.message || "Erreur lors de la génération du PDF.");
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'rapport_idfit.pdf';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+      
+      alert("PDF téléchargé avec succès !");
+    } catch (error) {
+      console.error("Erreur PDF :", error);
+      alert("Impossible de contacter le serveur pour le PDF.");
     }
   }
 
