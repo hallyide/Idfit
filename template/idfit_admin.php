@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/idfit_admin.css">
-  <link rel="stylesheet" href="css/inline.css">
+<link rel="stylesheet" href="css/idfit_admin.css?v=1778498828">
+  <link rel="stylesheet" href="css/inline.css?v=1778498828">
 <script src="js/idfit_app.js"></script>
 
 
@@ -8,12 +8,12 @@
   <div class="sidebar">
     <div class="sb-logo">IdFit <span class="sb-tag">ADMIN</span></div>
     <div class="sb-section">Tableau de bord</div>
-    <div class="sb-item on"><i class="ti ti-dashboard" aria-hidden="true"></i> Statistiques</div>
+    <div class="sb-item on" onclick="location.href='<?= base_url('admin') ?>'"><i class="ti ti-dashboard" aria-hidden="true"></i> Statistiques</div>
     <div class="sb-section">Gestion</div>
-    <div class="sb-item"><i class="ti ti-salad" aria-hidden="true"></i> Régimes</div>
-    <div class="sb-item"><i class="ti ti-run" aria-hidden="true"></i> Sports</div>
+    <div class="sb-item" onclick="location.href='<?= base_url('admin/regimes') ?>'"><i class="ti ti-salad" aria-hidden="true"></i> Régimes</div>
+    <div class="sb-item" onclick="location.href='<?= base_url('admin/sports') ?>'"><i class="ti ti-run" aria-hidden="true"></i> Sports</div>
     <div class="sb-item"><i class="ti ti-users" aria-hidden="true"></i> Utilisateurs</div>
-    <div class="sb-item"><i class="ti ti-ticket" aria-hidden="true"></i> Codes</div>
+    <div class="sb-item" onclick="location.href='<?= base_url('admin/validation-codes') ?>'"><i class="ti ti-ticket" aria-hidden="true"></i> Codes</div>
     <div class="sb-section">Configuration</div>
     <div class="sb-item"><i class="ti ti-settings" aria-hidden="true"></i> Paramètres</div>
     <div class="sb-bottom">Admin · IdFit v1.0</div>
@@ -110,6 +110,3 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="js/idfit_admin.js"></script>
-
-
-

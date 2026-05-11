@@ -15,7 +15,7 @@
     <h1>Rapport Santé - NutriPlan</h1>
     
     <div class="box">
-        <h3>Profil de <?= esc($user['prenom']) ?> <?= esc($user['nom']) ?></h3>
+        <h3>Profil de <?= esc($user['userFirstName'] ?? 'Utilisateur') ?> <?= esc($user['userLastName'] ?? '') ?></h3>
         <p><strong>Taille :</strong> <?= esc($user['taille']) ?> cm</p>
         <p><strong>Poids actuel :</strong> <?= esc($user['poids']) ?> kg</p>
     </div>
@@ -26,5 +26,48 @@
         <p><strong>Catégorie :</strong> <?= ucfirst(esc($categorie)) ?></p>
         <p><strong>Poids idéal estimé :</strong> <?= esc($poids_ideal) ?> kg</p>
     </div>
+
+    <?php if ($regime): ?>
+    <div class="box">
+        <h3 style="color: #663266;">Votre Programme Actif : <?= esc($regime['nom']) ?></h3>
+        <p><?= esc($regime['description']) ?></p>
+        <p><strong>Objectif :</strong> <?= esc($regime['objectif']) ?></p>
+        <p><strong>Apport énergétique :</strong> <?= esc($regime['calories_jour']) ?> kcal / jour</p>
+        
+        <h4 style="margin-top: 15px;">Répartition Nutritionnelle</h4>
+        <table style="margin-top: 10px; border: 1px solid #eee;">
+            <thead>
+                <tr>
+                    <th style="background: #f8f5fa; border-bottom: 2px solid #663266; color: #663266;">Viande</th>
+                    <th style="background: #f8f5fa; border-bottom: 2px solid #663266; color: #663266;">Poisson</th>
+                    <th style="background: #f8f5fa; border-bottom: 2px solid #663266; color: #663266;">Volaille</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: center; font-weight: bold;"><?= esc($regime['pct_viande']) ?>%</td>
+                    <td style="text-align: center; font-weight: bold;"><?= esc($regime['pct_poisson']) ?>%</td>
+                    <td style="text-align: center; font-weight: bold;"><?= esc($regime['pct_volaille']) ?>%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <?php if (!empty($sports)): ?>
+    <div class="box">
+        <h3 style="color: #663266;">Activités Sportives Recommandées</h3>
+        <ul>
+            <?php foreach ($sports as $s): ?>
+                <li>
+                    <strong><?= esc($s['nom']) ?> :</strong> 
+                    <?= esc($s['description']) ?> 
+                    (<?= esc($s['duree_min']) ?> min, <?= esc($s['frequence_semaine']) ?>x / semaine)
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+    <?php endif; ?>
+    <?php endif; ?>
+
 </body>
 </html>

@@ -1,14 +1,28 @@
 REGIME
 le fichier pdf doit contenir 
-le pourcentage de nouriture et le sport
+le pourcentage de nouriture et le sport[valider]
 si on appuis sur pdf sans souscription onpeut le telecharger
     or que non 
 et si apre avois telecharger et appuis sur soumetre on a achette l'abonement
 il faut qu'on souscive a un abonement avant d'avoire le regime
-CASH
+CASH[valider]
     le code doit etre valider par l'admin pour que le client avoir l'argent 
     afficher l'historique
 ui
     connexion
     2eme etape de l'inscription
-    
+verificationemail connexion 
+-il verifie pas dans la base mais dans idfit_app[fait]
+	decouvire a quoi sert idft_app
+-arranger le pdf
+-remedier au glixhe dans la souscription de regime
+-arranger le ui 
+-mettre email deja utiliser dans 
+	retour directe sur page 1
+-inscription
+	on vas pas bien les lettre 
+	le bonten genre devrais changer de vouleur quand on y touche
+-dashboar
+	changer de couleur quand on appuie sur un bouton
+-structure 
+	reneomer templat en user et le mettre dans view

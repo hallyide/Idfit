@@ -3,9 +3,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<link rel="stylesheet" href="css/header.css">
-<link rel="stylesheet" href="css/idfit_dashboard_user.css">
-  <link rel="stylesheet" href="css/inline.css">
+<link rel="stylesheet" href="css/header.css?v=1778498828">
+<link rel="stylesheet" href="css/idfit_dashboard_user.css?v=1778498828">
+  <link rel="stylesheet" href="css/inline.css?v=1778498828">
 <script src="js/idfit_app.js"></script>
 
 
@@ -86,8 +86,8 @@
   <div class="main">
     <div class="topbar">
       <div>
-        <div class="page-title">Bonjour, Finaritra 👋</div>
-        <div class="page-sub">Lundi 5 mai 2025 · Semaine 3 de votre programme</div>
+        <div class="page-title">Bonjour, <?= esc($userFirstName ?? 'Utilisateur') ?> 👋</div>
+        <div class="page-sub"><?= date('l j F Y') ?> · Suivi de votre programme personnalisé</div>
       </div>
       <div class="topbar-right">
         <a href="idfit_finance.php" class="wallet" style="text-decoration: none;"><i class="ti ti-wallet" aria-hidden="true"></i> <span data-wallet-balance><?= number_format($walletBalance ?? 0, 0, ',', ' ') ?> Ar</span></a>
@@ -97,23 +97,28 @@
     <div class="metrics">
       <div class="met">
         <div class="met-label"><i class="ti ti-weight u-style-1" aria-hidden="true"></i> Poids actuel</div>
-        <div class="met-val met-accent">85.2 <span class="u-style-12">kg</span></div>
-        <div class="met-sub u-style-2">▼ −2.8 kg ce mois</div>
+        <div class="met-val met-accent"><span id="display-weight"><?= number_format($user['poids'] ?? 0, 1) ?></span> <span class="u-style-12">kg</span></div>
+        <div class="met-sub u-style-2" id="display-weight-date">Dernière mise à jour : <?= !empty($user['updated_at']) ? date('d/m/Y', strtotime($user['updated_at'])) : 'Jamais' ?></div>
       </div>
       <div class="met">
         <div class="met-label"><i class="ti ti-target u-style-1" aria-hidden="true"></i> Objectif</div>
-        <div class="met-val u-style-13">Réduire</div>
-        <div class="met-sub">Cible : 67.5 kg</div>
+        <div class="met-val u-style-13" id="display-objective"><?= esc(ucfirst($user['objectif'] ?? 'Non défini')) ?></div>
+        <div class="met-sub">Cible : <?= number_format($idealWeight ?? 0, 1) ?> kg</div>
       </div>
       <div class="met">
         <div class="met-label"><i class="ti ti-flame u-style-1" aria-hidden="true"></i> Calories/jour</div>
-        <div class="met-val met-amber">2 100</div>
+        <div class="met-val met-amber" id="display-calories"><?= esc((string)($activeSubscription['calories_jour'] ?? '0')) ?></div>
         <div class="met-sub">kcal recommandées</div>
       </div>
       <div class="met">
         <div class="met-label"><i class="ti ti-activity u-style-1" aria-hidden="true"></i> IMC actuel</div>
-        <div class="met-val met-amber">27.8</div>
-        <div class="met-sub">Surpoids modéré</div>
+        <div class="met-val met-amber" id="display-imc"><?= number_format($imc ?? 0, 1) ?></div>
+        <div class="met-sub"><?php 
+            if (($imc ?? 0) < 18.5) echo "Insuffisance";
+            elseif ($imc < 25) echo "Poids normal";
+            elseif ($imc < 30) echo "Surpoids";
+            else echo "Obésité";
+        ?></div>
       </div>
     </div>
 
@@ -130,36 +135,37 @@
 
       <div class="card">
         <div class="card-head"><div class="card-title">Enregistrer mon poids</div></div>
-        <div class="insert-form">
+        <form class="insert-form" onsubmit="event.preventDefault(); document.querySelector('[data-action=\'updateWeightHistory\']').click();">
           <div>
-            <label class="flabel">Poids du jour</label>
-            <div class="u-style-14"><input id="weight-value" class="inp" value="85.2"><span class="u-style-15">kg</span></div>
+            <label class="flabel" for="weight-value">Poids du jour</label>
+            <div class="u-style-14"><input id="weight-value" name="weight" class="inp" type="number" step="0.1" value="<?= $user['poids'] ?? '' ?>" required><span class="u-style-15">kg</span></div>
           </div>
           <div>
-            <label class="flabel">Date</label>
-            <input id="weight-date" class="inp" type="date" value="2025-05-05">
+            <label class="flabel" for="weight-date">Date</label>
+            <input id="weight-date" name="date" class="inp" type="date" value="<?= date('Y-m-d') ?>" required>
           </div>
           <div>
-            <label class="flabel">Note (optionnel)</label>
-            <input id="weight-note" class="inp" placeholder="Ex : après sport...">
+            <label class="flabel" for="weight-note">Note (optionnel)</label>
+            <input id="weight-note" name="note" class="inp" placeholder="Ex : après sport...">
           </div>
-          <button class="btn-save" data-action="updateWeightHistory"><i class="ti ti-device-floppy" aria-hidden="true"></i> Enregistrer</button>
-        </div>
+          <button type="submit" class="btn-save" data-action="updateWeightHistory"><i class="ti ti-device-floppy" aria-hidden="true"></i> Enregistrer</button>
+        </form>
       </div>
     </div>
 
     <div class="card">
       <div class="card-head">
         <div class="card-title">Mon régime actif</div>
-        <span class="card-action" data-prompt="Montre-moi la page régimes IdFit">Changer de régime</span>
+        <a href="idfit_regimes.php" class="card-action" style="text-decoration: none;">Changer de régime</a>
       </div>
+      <?php if (!empty($activeSubscription)): ?>
       <div class="regime-item">
         <div class="regime-ico u-style-16"><i class="ti ti-salad u-style-17" aria-hidden="true"></i></div>
         <div>
-          <div class="regime-name">Régime Méditerranéen</div>
-          <div class="regime-sub">3 mois · 30% viande · 40% poisson · 30% volaille</div>
+          <div class="regime-name"><?= esc($activeSubscription['nom'] ?? $activeSubscription['regime_nom'] ?? 'Programme personnalisé') ?></div>
+          <div class="regime-sub"><?= $activeSubscription['duree_mois'] ?? '?' ?> mois · <?= (int)($activeSubscription['pct_viande'] ?? 0) ?>% viande · <?= (int)($activeSubscription['pct_poisson'] ?? 0) ?>% poisson · <?= (int)($activeSubscription['pct_volaille'] ?? 0) ?>% volaille</div>
         </div>
-        <div class="regime-price">-15% Gold</div>
+        <div class="regime-price"><?= ($isGold ?? false) ? '-15% Gold' : '' ?></div>
       </div>
       <div class="u-style-18">
         <div class="u-style-19">
@@ -169,6 +175,10 @@
           <div class="u-style-21"></div>
         </div>
       </div>
+      <?php else: ?>
+        <div class="tx-empty">Vous n'avez pas de régime actif pour le moment.</div>
+        <a href="idfit_regimes.php" class="btn-sub" style="margin-top: 15px; display: inline-block; text-decoration: none; background: #7c3aed; color: white; padding: 10px 20px; border-radius: 8px;">Découvrir les programmes</a>
+      <?php endif; ?>
     </div>
   </div>
 </div>
