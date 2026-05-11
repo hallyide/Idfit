@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/idfit_admin.css">
-  <link rel="stylesheet" href="css/inline.css">
+<link rel="stylesheet" href="css/idfit_admin.css?v=1778498828">
+  <link rel="stylesheet" href="css/inline.css?v=1778498828">
 <script src="js/idfit_app.js"></script>
 
 

@@ -4,9 +4,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<link rel="stylesheet" href="css/header.css">
-<link rel="stylesheet" href="css/idfit_regimes.css">
-<link rel="stylesheet" href="css/inline.css">
+<link rel="stylesheet" href="css/header.css?v=1778498828">
+<link rel="stylesheet" href="css/idfit_regimes.css?v=1778498828">
+<link rel="stylesheet" href="css/inline.css?v=1778498828">
 <script src="js/idfit_app.js"></script>
 
 <header class="user-header-wrap">

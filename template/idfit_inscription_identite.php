@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>IdFit — Inscription Étape 1</title>
-    <link rel="stylesheet" href="css/idfit_inscription_identite.css">
-    <link rel="stylesheet" href="css/inline.css">
+    <link rel="stylesheet" href="css/idfit_inscription_identite.css?v=1778498828">
+    <link rel="stylesheet" href="css/inline.css?v=1778498828">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     
     <script src="js/idfit_app.js"></script>
@@ -156,7 +156,7 @@
 
     <div class="hint-box">
       <i class="ti ti-shield-check hint-ico" aria-hidden="true"></i>
-      <div class="hint-txt">Vos données sont protégées et ne seront jamais partagées avec des tiers.</div>
+      <div class="hint-txt" style="color: white;">Vos données sont protégées et ne seront jamais partagées avec des tiers.</div>
     </div>
 
     <div class="row2">
@@ -170,17 +170,16 @@
         <input id="nom" class="inp" placeholder="Ex: Rakoto">
         <div id="nom-error" class="err-msg"></div>
       </div>
-    </div>
 
-    <div class="field">
-      <div class="flabel"><i class="ti ti-users" aria-hidden="true"></i> Genre</div>
-      <div class="genre-row">
-        <button type="button" class="genre-btn on"><i class="ti ti-gender-male" aria-hidden="true"></i> Homme</button>
-        <button type="button" class="genre-btn"><i class="ti ti-gender-female" aria-hidden="true"></i> Femme</button>
-        <button type="button" class="genre-btn"><i class="ti ti-gender-bigender" aria-hidden="true"></i> Autre</button>
+      <div class="field">
+        <div class="flabel"><i class="ti ti-users" aria-hidden="true"></i> Genre</div>
+        <div class="genre-row">
+          <button type="button" class="genre-btn on"><i class="ti ti-gender-male" aria-hidden="true"></i> Homme</button>
+          <button type="button" class="genre-btn"><i class="ti ti-gender-female" aria-hidden="true"></i> Femme</button>
+          <button type="button" class="genre-btn"><i class="ti ti-gender-bigender" aria-hidden="true"></i> Autre</button>
+        </div>
       </div>
-    </div>
-
+      
     <div class="field">
       <div class="flabel"><i class="ti ti-mail" aria-hidden="true"></i> Email</div>
       <input id="email" class="inp" type="email" placeholder="votre@email.com">
@@ -201,16 +200,32 @@
         <input id="confirm-password" class="inp" type="password" placeholder="••••••••">
         <div id="confirm-password-error" class="err-msg"></div>
       </div>
-    </div>
 
-    <div class="btn-row">
-      <a href="idfit_connexion.php" class="btn-sec">Annuler</a>
-      <button class="btn-main" onclick="preparerEtape1()">
-        Continuer <i class="ti ti-arrow-right" aria-hidden="true"></i>
-      </button>
-    </div>
+      <div class="btn-row">
+        <a href="idfit_connexion.php" class="btn-sec">Annuler</a>
+        <button type="submit" class="btn-main">
+          Continuer <i class="ti ti-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </form>
   </div>
 </div>
+
+<script>
+    function togglePassword(inputId, iconId) {
+        const passwordInput = document.getElementById(inputId);
+        const eyeIcon = document.getElementById(iconId);
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('ti-eye');
+            eyeIcon.classList.add('ti-eye-off');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('ti-eye-off');
+            eyeIcon.classList.add('ti-eye');
+        }
+    }
+</script>
 
 </body>
 </html>

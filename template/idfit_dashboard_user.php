@@ -3,9 +3,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<link rel="stylesheet" href="css/header.css">
-<link rel="stylesheet" href="css/idfit_dashboard_user.css">
-  <link rel="stylesheet" href="css/inline.css">
+<link rel="stylesheet" href="css/header.css?v=1778498828">
+<link rel="stylesheet" href="css/idfit_dashboard_user.css?v=1778498828">
+  <link rel="stylesheet" href="css/inline.css?v=1778498828">
 <script src="js/idfit_app.js"></script>
 
 
@@ -141,21 +141,21 @@
 
       <div class="card">
         <div class="card-head"><div class="card-title">Enregistrer mon poids</div></div>
-        <div class="insert-form">
+        <form class="insert-form" onsubmit="event.preventDefault(); document.querySelector('[data-action=\'updateWeightHistory\']').click();">
           <div>
             <label class="flabel">Poids du jour</label>
             <div class="u-style-14"><input id="weight-value" class="inp" type="number" step="0.1" min="20" value="<?= esc((string)($poids ?? '')) ?>"><span class="u-style-15">kg</span></div>
           </div>
           <div>
-            <label class="flabel">Date</label>
-            <input id="weight-date" class="inp" type="date" value="<?= date('Y-m-d') ?>">
+            <label class="flabel" for="weight-date">Date</label>
+            <input id="weight-date" name="date" class="inp" type="date" value="<?= date('Y-m-d') ?>" required>
           </div>
           <div>
-            <label class="flabel">Note (optionnel)</label>
-            <input id="weight-note" class="inp" placeholder="Ex : après sport...">
+            <label class="flabel" for="weight-note">Note (optionnel)</label>
+            <input id="weight-note" name="note" class="inp" placeholder="Ex : après sport...">
           </div>
-          <button class="btn-save" data-action="updateWeightHistory"><i class="ti ti-device-floppy" aria-hidden="true"></i> Enregistrer</button>
-        </div>
+          <button type="submit" class="btn-save" data-action="updateWeightHistory"><i class="ti ti-device-floppy" aria-hidden="true"></i> Enregistrer</button>
+        </form>
       </div>
     </div>
 
