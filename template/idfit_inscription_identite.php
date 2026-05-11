@@ -83,7 +83,7 @@
 
     <div class="hint-box">
       <i class="ti ti-shield-check hint-ico" aria-hidden="true"></i>
-      <div class="hint-txt">Vos données sont protégées et ne seront jamais partagées avec des tiers.</div>
+      <div class="hint-txt" style="color: white;">Vos données sont protégées et ne seront jamais partagées avec des tiers.</div>
     </div>
 
     <form id="identity-form" onsubmit="event.preventDefault(); preparerEtape1();">
