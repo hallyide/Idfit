@@ -1,3 +1,10 @@
 {
-  "snyk.advanced.autoSelectOrganization": true
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        ".phive_router.php": true
+    }
 }
