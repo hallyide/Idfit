@@ -28,7 +28,7 @@ class UserModel extends Model
         'nom'           => 'required|min_length[2]|max_length[100]',
         'prenom'        => 'required|min_length[2]|max_length[100]',
         'email'         => 'required|valid_email|is_unique[users.email]',
-        'password_hash' => 'required|min_length[6]',
+        'password_hash' => 'required|min_length[8]',
         'taille'        => 'required|numeric|greater_than[50]',
         'poids'         => 'required|numeric|greater_than[20]'
     ];

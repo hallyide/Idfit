@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\ConfigSystemModel;
 use App\Models\SubscriptionModel;
 use App\Models\UserModel;
+use App\Models\WeightHistoryModel;
 
 class DashboardService
 {
@@ -28,6 +29,11 @@ class DashboardService
         $imc = $imcService->calculateIMC($poids, $taille);
 
         $objectiveLabel = $this->getObjectiveLabel((string)($user['objectif'] ?? $user['objective'] ?? 'ideal'));
+        $latestWeight = (new WeightHistoryModel())
+            ->where('user_id', $userId)
+            ->orderBy('date_mesure', 'DESC')
+            ->first();
+        $lastWeightDate = $latestWeight['date_mesure'] ?? $user['updated_at'] ?? $user['created_at'] ?? null;
 
         // Ideal weight selon service
         $idealWeight = $imcService->calculateIdealWeight($taille);
@@ -55,6 +61,7 @@ class DashboardService
             'walletBalance' => $walletBalance,
 
             'poids' => $poids,
+            'lastWeightDate' => $lastWeightDate,
             'taille' => $taille,
             'imc' => $imc,
             'idealWeight' => $idealWeight,
